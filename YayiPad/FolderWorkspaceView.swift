@@ -40,6 +40,7 @@ struct FolderWorkspaceView: View {
         } detail: {
             detailColumn
         }
+        .background(keyboardShortcutSink)
         .onAppear {
             didStartAccess = folderURL.startAccessingSecurityScopedResource()
             loadFiles()
@@ -155,6 +156,23 @@ struct FolderWorkspaceView: View {
             .frame(maxWidth: .infinity)
         }
         .id(url)  // Reset editor/preview state per selected file.
+    }
+
+    // MARK: - Keyboard shortcuts
+
+    /// Off-screen Buttons that register hardware-keyboard shortcuts not
+    /// already covered by a visible toolbar item. See ContentView for
+    /// the rationale; same idiom.
+    private var keyboardShortcutSink: some View {
+        Group {
+            Button("Find Next") { finder.findNext() }
+                .keyboardShortcut("g", modifiers: .command)
+            Button("Find Previous") { finder.findPrevious() }
+                .keyboardShortcut("g", modifiers: [.command, .shift])
+        }
+        .frame(width: 0, height: 0)
+        .opacity(0)
+        .accessibilityHidden(true)
     }
 
     // MARK: - Find bar

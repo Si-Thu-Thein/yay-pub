@@ -111,6 +111,26 @@ struct ContentView: View {
             mainPane
         }
         .animation(.easeInOut(duration: 0.18), value: showsFindBar)
+        .background(keyboardShortcutSink)
+    }
+
+    /// Off-screen buttons whose only purpose is to register hardware-keyboard
+    /// shortcuts that don't have a visible toolbar item. iOS routes a key
+    /// command to the first reachable Button with that shortcut, so a hidden
+    /// zero-size Button is the standard SwiftUI idiom for this on iPad.
+    private var keyboardShortcutSink: some View {
+        Group {
+            Button("Toggle Preview") { showsPreview.toggle() }
+                .keyboardShortcut("r", modifiers: .command)
+                .disabled(!isPreviewSupported)
+            Button("Find Next") { finder.findNext() }
+                .keyboardShortcut("g", modifiers: .command)
+            Button("Find Previous") { finder.findPrevious() }
+                .keyboardShortcut("g", modifiers: [.command, .shift])
+        }
+        .frame(width: 0, height: 0)
+        .opacity(0)
+        .accessibilityHidden(true)
     }
 
     @ViewBuilder
