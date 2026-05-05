@@ -259,3 +259,30 @@ jobs:
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGNING_ALLOWED=NO \
             build
+
+  # Single required check for branch protection. Passes only if every
+  # upstream job either succeeded or was skipped (path-filtered out).
+  ci-passed:
+    name: CI Passed
+    needs:
+      - changes
+      - spm-macos-yaycore
+      - spm-macos-yaytexteditor
+      - spm-macos-yaypreview
+      - spm-macos-yayexport
+      - spm-ios-yaycore
+      - spm-ios-yaytexteditor
+      - spm-ios-yaypreview
+      - spm-ios-yayexport
+      - macos-app
+      - ipad-app
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify no upstream job failed or was cancelled
+        run: |
+          if [[ "${{ contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled') }}" == "true" ]]; then
+            echo "One or more upstream jobs failed or were cancelled."
+            exit 1
+          fi
+          echo "All upstream jobs passed or were skipped."
