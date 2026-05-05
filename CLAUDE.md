@@ -25,7 +25,7 @@ xcodebuild -project Yay.xcodeproj -scheme Yay -configuration Debug build
 cd YayTextEditor && swift build
 ```
 
-There are no test targets in the project — `swift test` and `xcodebuild test` will fail.
+Each SPM package declares its own test target (`YayCoreTests`, `YayPreviewTests`, `YayTextEditorTests`). Run them per-package with `cd <Package> && swift test`. The Xcode app targets (`Yay`, `YayiPad`) have no test targets, so `xcodebuild test` against the project will fail — use the SPM test invocation instead.
 
 `build.sh` always builds **arch=arm64**, ad-hoc signs (`CODE_SIGN_IDENTITY="-"`), disables hardened runtime, and stages into a temp dir before `hdiutil create`. The resulting DMG is unsigned, which is why README tells users to right-click → Open on first launch.
 
@@ -69,7 +69,7 @@ SwiftUI `DocumentGroup` for `.md` files (`MarkdownFileDocument`). Folder-mode UI
 
 These rules apply to all work on this repo, especially the iPad port:
 
-- **Never commit to `main` directly.** Every change lands on a feature branch and is merged into `main` only after review.
+- **Never commit to `main` directly.** Every change lands on a feature branch and is merged into `main` only after review. This is also enforced by a GitHub repository ruleset on `main` (PR required, `CI Passed` status check required, force-push and deletion blocked, no bypass actors).
 - **Branch naming**: `phase-<N>/<short-slug>` for port phases (e.g. `phase-0/ios-platform-foundation`), or `feature/<short-slug>` / `fix/<short-slug>` otherwise.
 - **Commits**: small, focused, imperative-tense subject ≤72 chars; body explains the *why*. Group related changes; don't bundle unrelated edits.
 - **Definition of done** for a branch before it can be merged:
@@ -78,14 +78,14 @@ These rules apply to all work on this repo, especially the iPad port:
   3. `swift test` passes for every package that has tests.
   4. New logic has unit tests where it is reasonable to write them (parsers, highlighters, range math, model classes — yes; trivial SwiftUI bindings — no).
 - **Review before merge**: invoke the `feature-dev:code-reviewer` subagent on the branch diff. Only merge if it raises **no high-confidence (≥75) issues** that aren't addressed. Capture the reviewer's verdict in the merge commit body or PR comment.
-- **Remote**: `yay` → `Si-Thu-Thein/yay` (private). Push feature branches and open PRs via `gh pr create --base main`. Use squash-merge or merge commits — not rebase-merge — so the review trail stays attached to the PR.
-- **CI**: `.github/workflows/ci.yml` runs `swift build` + `swift test` per package on `macos-latest`. Keep it green. Add jobs as platforms are added.
+- **Remote**: `origin` → `Si-Thu-Thein/yay-pub` (public mirror, SSH). Push feature branches and open PRs via `gh pr create --base main`. Use squash-merge or merge commits — not rebase-merge — so the review trail stays attached to the PR.
+- **CI**: `.github/workflows/ci.yml` runs path-filtered per-package `swift build`/`swift test` jobs on `macos-latest` for both macOS and iOS Simulator destinations, plus `xcodebuild` builds of the `Yay` and `YayiPad` app targets. A `CI Passed` aggregator job depends on all of them with `if: always()` and is the single required status check on `main`. Keep it green. Add jobs as platforms or packages are added (and update the aggregator's `needs:` list when you do).
 - **Tests live next to their package**: `YayCore/Tests/YayCoreTests/`, etc. Each `Package.swift` declares its test target.
 - **Per-directory `README.md`**: every meaningful source directory has a `README.md` describing its contents and any directory-specific conventions. Keep them short (≤30 lines). Update them when the directory's purpose changes. Skip generated/scaffolding dirs only (`*.xcodeproj`, `*.xcassets`, `*.icon`, `build/`, `.swiftpm/`, `.git/`). Note: `Yay/` is a **synchronized Xcode folder**, so any new README.md inside it must also be added to `membershipExceptions` in `Yay.xcodeproj/project.pbxproj` to keep it out of the app bundle.
 
-## Cross-platform conventions (in progress, Phase 0 of iPad port)
+## Cross-platform conventions
 
-When the iPad port begins, these rules apply to every change in `YayCore`/`YayTextEditor`/`YayPreview`/`YayExport`:
+Phases 0–3 of the iPad port have landed: the four SPM packages compile for both macOS and iOS, `YayiPad` is a working app target, and CI builds both apps on every PR. These rules apply to every change in `YayCore`/`YayTextEditor`/`YayPreview`/`YayExport`:
 
 - **Do not import `AppKit` directly** in shared code. Use `PlatformColor`/`PlatformFont`/`PlatformView` typealiases from `YayCore`, or gate AppKit usage with `#if os(macOS)`.
 - **`MarkdownLayoutManager` and the highlighters must remain platform-neutral** — they are the load-bearing shared code for both targets.
