@@ -3,18 +3,12 @@ name: CI
 on:
   pull_request:
     branches: [main]
-    # paths-ignore: skip CI entirely when only these (root-level docs +
-    # marketing assets + .gitignore) change. README.md files INSIDE Yay/ or
-    # YayiPad/ are intentionally NOT ignored — those go through synchronized
-    # folder bundling and need CI to verify the membershipExceptions in
-    # project.pbxproj. README.md files inside SPM Sources/ aren't bundled
-    # but are also rarely edited, so leaving them gated is fine.
-    paths-ignore:
-      - 'README.md'
-      - 'CLAUDE.md'
-      - 'IPAD_PORT_PLAN.md'
-      - '.gitignore'
-      - 'assets/**'
+    # No top-level paths-ignore: the `CI Passed` aggregator is a required
+    # status check on `main`, so the workflow MUST trigger on every PR or
+    # docs-only PRs deadlock waiting for a check that will never run.
+    # Per-job `if:` gating against the `changes` job below still skips
+    # macOS/iOS runners for paths that don't affect a given package, so
+    # docs-only PRs cost only the cheap `changes` job + the aggregator.
   workflow_dispatch:
     # Manual trigger so we can re-run CI on main or any branch when we
     # specifically want to (e.g. after a force-push, or to verify a
