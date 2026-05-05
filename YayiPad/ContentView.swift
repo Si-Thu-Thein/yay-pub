@@ -10,7 +10,9 @@ struct ContentView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @State private var configuration: YayEditorConfiguration = .standard
     @StateObject private var scrollSync = ScrollSyncBridge()
+    @StateObject private var finder = IOSTextFinder()
     @State private var showsPreview: Bool = true
+    @State private var showsFindBar: Bool = false
     @State private var hasSecurityScope: Bool = false
 
     var body: some View {
@@ -19,6 +21,15 @@ struct ContentView: View {
                 .navigationTitle(navigationTitle)
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button {
+                            toggleFindBar()
+                        } label: {
+                            Image(systemName: "magnifyingglass")
+                        }
+                        .keyboardShortcut("f", modifiers: .command)
+                        .accessibilityLabel(showsFindBar ? "Hide find bar" : "Find")
+                    }
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Button {
                             showsPreview.toggle()
@@ -46,11 +57,26 @@ struct ContentView: View {
                 fileURL.stopAccessingSecurityScopedResource()
                 hasSecurityScope = false
             }
+            finder.detach()
         }
     }
 
     @ViewBuilder
     private var content: some View {
+        VStack(spacing: 0) {
+            if showsFindBar {
+                FindBarView(finder: finder) {
+                    closeFindBar()
+                }
+                .transition(.move(edge: .top).combined(with: .opacity))
+            }
+            mainPane
+        }
+        .animation(.easeInOut(duration: 0.18), value: showsFindBar)
+    }
+
+    @ViewBuilder
+    private var mainPane: some View {
         // Always show the editor as the primary column. In regular-width iPad,
         // also show the preview side-by-side when the toggle is on. In compact
         // width (Slide Over, narrow split-view), the preview is hidden so the
@@ -76,7 +102,8 @@ struct ContentView: View {
         YayTextEditor(
             text: $document.text,
             configuration: configuration,
-            scrollSync: scrollSync
+            scrollSync: scrollSync,
+            finder: finder
         )
         .frame(maxWidth: .infinity)
         .ignoresSafeArea(edges: .bottom)
@@ -93,5 +120,24 @@ struct ContentView: View {
 
     private var navigationTitle: String {
         fileURL?.deletingPathExtension().lastPathComponent ?? "Untitled"
+    }
+
+    // MARK: - Find bar
+
+    private func toggleFindBar() {
+        if showsFindBar {
+            closeFindBar()
+        } else {
+            showsFindBar = true
+        }
+    }
+
+    private func closeFindBar() {
+        showsFindBar = false
+        // Clearing findString triggers the finder's debounced clearHighlights
+        // path. Don't detach — the editor's UIViewRepresentable holds a
+        // reference and updateUIView will re-attach on the next open, but
+        // skipping the detach lets the finder stay primed if the user reopens.
+        finder.findString = ""
     }
 }
