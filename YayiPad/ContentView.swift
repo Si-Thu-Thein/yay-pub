@@ -1,4 +1,5 @@
 import SwiftUI
+import UniformTypeIdentifiers
 import YayCore
 import YayPreview
 import YayTextEditor
@@ -14,6 +15,15 @@ struct ContentView: View {
     @State private var showsPreview: Bool = true
     @State private var showsFindBar: Bool = false
     @State private var hasSecurityScope: Bool = false
+    @State private var showsFolderPicker: Bool = false
+    @State private var openedFolder: OpenedFolder?
+
+    /// Wrapper used as a fullScreenCover `item:` so SwiftUI can identify
+    /// the presentation. URL alone isn't Identifiable.
+    private struct OpenedFolder: Identifiable {
+        let id = UUID()
+        let url: URL
+    }
 
     var body: some View {
         NavigationStack {
@@ -21,6 +31,15 @@ struct ContentView: View {
                 .navigationTitle(navigationTitle)
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
+                    ToolbarItem(placement: .navigationBarLeading) {
+                        Button {
+                            showsFolderPicker = true
+                        } label: {
+                            Image(systemName: "folder")
+                        }
+                        .keyboardShortcut("o", modifiers: [.command, .shift])
+                        .accessibilityLabel("Open folder")
+                    }
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Button {
                             toggleFindBar()
@@ -40,6 +59,25 @@ struct ContentView: View {
                         .disabled(!isPreviewSupported)
                     }
                 }
+        }
+        .fileImporter(
+            isPresented: $showsFolderPicker,
+            allowedContentTypes: [.folder],
+            allowsMultipleSelection: false
+        ) { result in
+            switch result {
+            case .success(let urls):
+                if let url = urls.first {
+                    openedFolder = OpenedFolder(url: url)
+                }
+            case .failure:
+                break
+            }
+        }
+        .fullScreenCover(item: $openedFolder) { opened in
+            FolderWorkspaceView(folderURL: opened.url) {
+                openedFolder = nil
+            }
         }
         .onAppear {
             // The URL vended by DocumentGroup / UIDocumentBrowserViewController is
