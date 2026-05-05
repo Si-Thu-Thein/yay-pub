@@ -51,7 +51,7 @@ struct FolderWorkspaceView: View {
             }
             finder.detach()
         }
-        .onChange(of: selectedFile) { _, new in
+        .onChange(of: selectedFile) { new in
             loadFile(new)
         }
         .alert(
