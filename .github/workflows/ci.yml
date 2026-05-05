@@ -1,0 +1,261 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+    # paths-ignore: skip CI entirely when only these (root-level docs +
+    # marketing assets + .gitignore) change. README.md files INSIDE Yay/ or
+    # YayiPad/ are intentionally NOT ignored — those go through synchronized
+    # folder bundling and need CI to verify the membershipExceptions in
+    # project.pbxproj. README.md files inside SPM Sources/ aren't bundled
+    # but are also rarely edited, so leaving them gated is fine.
+    paths-ignore:
+      - 'README.md'
+      - 'CLAUDE.md'
+      - 'IPAD_PORT_PLAN.md'
+      - '.gitignore'
+      - 'assets/**'
+  workflow_dispatch:
+    # Manual trigger so we can re-run CI on main or any branch when we
+    # specifically want to (e.g. after a force-push, or to verify a
+    # speculative workflow change).
+
+# Note: deliberately no `push` trigger. The post-merge commit on main is
+# already covered by the PR's most recent CI run; retriggering on the
+# merge commit was a chunk of waste during the iPad port. Direct pushes
+# to main are forbidden by CLAUDE.md anyway.
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # Cheap (Linux 1x) job that decides which downstream jobs need to run.
+  # Cascades: a YayCore change marks every dependent package as changed.
+  changes:
+    name: Detect changed paths
+    runs-on: ubuntu-latest
+    outputs:
+      yaycore: ${{ steps.filter.outputs.yaycore }}
+      yaytexteditor: ${{ steps.filter.outputs.yaytexteditor }}
+      yaypreview: ${{ steps.filter.outputs.yaypreview }}
+      yayexport: ${{ steps.filter.outputs.yayexport }}
+      yay-app: ${{ steps.filter.outputs.yay-app }}
+      yayipad-app: ${{ steps.filter.outputs.yayipad-app }}
+      ci-config: ${{ steps.filter.outputs.ci-config }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            yaycore:
+              - 'YayCore/**'
+            yaytexteditor:
+              - 'YayCore/**'
+              - 'YayTextEditor/**'
+            yaypreview:
+              - 'YayCore/**'
+              - 'YayPreview/**'
+            yayexport:
+              - 'YayCore/**'
+              - 'YayPreview/**'
+              - 'YayExport/**'
+            yay-app:
+              - 'YayCore/**'
+              - 'YayTextEditor/**'
+              - 'YayPreview/**'
+              - 'YayExport/**'
+              - 'Yay/**'
+              - 'Yay.xcodeproj/**'
+            yayipad-app:
+              - 'YayCore/**'
+              - 'YayTextEditor/**'
+              - 'YayPreview/**'
+              - 'YayExport/**'
+              - 'YayiPad/**'
+              - 'Yay.xcodeproj/**'
+            ci-config:
+              - '.github/workflows/**'
+
+  # ---------- SPM macOS (4 explicit per-package jobs) ----------
+  # Each is gated at the JOB level so unaffected packages don't spin up a
+  # macOS runner at all (job-level if: skips runner allocation entirely;
+  # step-level if: would still pay the boot cost).
+
+  spm-macos-yaycore:
+    name: SPM macOS (YayCore)
+    needs: changes
+    if: needs.changes.outputs.yaycore == 'true' || needs.changes.outputs.ci-config == 'true'
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: swift --version
+      - working-directory: YayCore
+        run: swift build -v
+      - if: hashFiles('YayCore/Tests/**/*.swift') != ''
+        working-directory: YayCore
+        run: swift test -v
+
+  spm-macos-yaytexteditor:
+    name: SPM macOS (YayTextEditor)
+    needs: changes
+    if: needs.changes.outputs.yaytexteditor == 'true' || needs.changes.outputs.ci-config == 'true'
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: swift --version
+      - working-directory: YayTextEditor
+        run: swift build -v
+      - if: hashFiles('YayTextEditor/Tests/**/*.swift') != ''
+        working-directory: YayTextEditor
+        run: swift test -v
+
+  spm-macos-yaypreview:
+    name: SPM macOS (YayPreview)
+    needs: changes
+    if: needs.changes.outputs.yaypreview == 'true' || needs.changes.outputs.ci-config == 'true'
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: swift --version
+      - working-directory: YayPreview
+        run: swift build -v
+      - if: hashFiles('YayPreview/Tests/**/*.swift') != ''
+        working-directory: YayPreview
+        run: swift test -v
+
+  spm-macos-yayexport:
+    name: SPM macOS (YayExport)
+    needs: changes
+    if: needs.changes.outputs.yayexport == 'true' || needs.changes.outputs.ci-config == 'true'
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: swift --version
+      - working-directory: YayExport
+        run: swift build -v
+      - if: hashFiles('YayExport/Tests/**/*.swift') != ''
+        working-directory: YayExport
+        run: swift test -v
+
+  # ---------- SPM iOS (4 explicit per-package jobs) ----------
+
+  spm-ios-yaycore:
+    name: SPM iOS (YayCore)
+    needs: changes
+    if: needs.changes.outputs.yaycore == 'true' || needs.changes.outputs.ci-config == 'true'
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode.app
+      - working-directory: YayCore
+        run: |
+          xcodebuild build \
+            -scheme YayCore \
+            -destination 'generic/platform=iOS Simulator' \
+            -derivedDataPath build \
+            CODE_SIGN_IDENTITY="-" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO
+
+  spm-ios-yaytexteditor:
+    name: SPM iOS (YayTextEditor)
+    needs: changes
+    if: needs.changes.outputs.yaytexteditor == 'true' || needs.changes.outputs.ci-config == 'true'
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode.app
+      - working-directory: YayTextEditor
+        run: |
+          xcodebuild build \
+            -scheme YayTextEditor \
+            -destination 'generic/platform=iOS Simulator' \
+            -derivedDataPath build \
+            CODE_SIGN_IDENTITY="-" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO
+
+  spm-ios-yaypreview:
+    name: SPM iOS (YayPreview)
+    needs: changes
+    if: needs.changes.outputs.yaypreview == 'true' || needs.changes.outputs.ci-config == 'true'
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode.app
+      - working-directory: YayPreview
+        run: |
+          xcodebuild build \
+            -scheme YayPreview \
+            -destination 'generic/platform=iOS Simulator' \
+            -derivedDataPath build \
+            CODE_SIGN_IDENTITY="-" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO
+
+  spm-ios-yayexport:
+    name: SPM iOS (YayExport)
+    needs: changes
+    if: needs.changes.outputs.yayexport == 'true' || needs.changes.outputs.ci-config == 'true'
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode.app
+      - working-directory: YayExport
+        run: |
+          xcodebuild build \
+            -scheme YayExport \
+            -destination 'generic/platform=iOS Simulator' \
+            -derivedDataPath build \
+            CODE_SIGN_IDENTITY="-" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO
+
+  # ---------- App targets ----------
+
+  macos-app:
+    name: xcodebuild (Yay.app, Debug)
+    needs: changes
+    if: needs.changes.outputs.yay-app == 'true' || needs.changes.outputs.ci-config == 'true'
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode.app
+      - run: |
+          xcodebuild \
+            -project Yay.xcodeproj \
+            -scheme Yay \
+            -configuration Debug \
+            -derivedDataPath build \
+            CODE_SIGN_IDENTITY="-" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO \
+            build
+
+  ipad-app:
+    name: xcodebuild (YayiPad.app, Debug)
+    needs: changes
+    if: needs.changes.outputs.yayipad-app == 'true' || needs.changes.outputs.ci-config == 'true'
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode.app
+      - run: |
+          xcodebuild \
+            -project Yay.xcodeproj \
+            -scheme YayiPad \
+            -configuration Debug \
+            -destination 'generic/platform=iOS Simulator' \
+            -derivedDataPath build \
+            CODE_SIGN_IDENTITY="-" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO \
+            build

@@ -1,0 +1,8 @@
+# GitHub CODEOWNERS — assigns reviewers automatically when a PR touches
+# the matching paths. Solo project today, so the catch-all is the only
+# entry. If contributors are added later, give them ownership of the
+# packages they maintain.
+#
+# Docs: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+* @Si-Thu-Thein

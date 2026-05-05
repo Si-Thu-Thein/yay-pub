@@ -1,0 +1,602 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		A05EC2432FA2C201004B8A5C /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = A05EC2422FA2C201004B8A5C /* AppIcon.icon */; };
+		A0E7DA0C2F64B66900924586 /* YayCore in Frameworks */ = {isa = PBXBuildFile; productRef = A0E7DA0B2F64B66900924586 /* YayCore */; };
+		A0E7DA0F2F64B67700924586 /* YayTextEditor in Frameworks */ = {isa = PBXBuildFile; productRef = A0E7DA0E2F64B67700924586 /* YayTextEditor */; };
+		A0E7DA122F64B68700924586 /* YayPreview in Frameworks */ = {isa = PBXBuildFile; productRef = A0E7DA112F64B68700924586 /* YayPreview */; };
+		A0E7DA152F64B69700924586 /* YayExport in Frameworks */ = {isa = PBXBuildFile; productRef = A0E7DA142F64B69700924586 /* YayExport */; };
+		B00000000000000000000B01 /* YayCore in Frameworks */ = {isa = PBXBuildFile; productRef = B00000000000000000000E01 /* YayCore */; };
+		B00000000000000000000B02 /* YayTextEditor in Frameworks */ = {isa = PBXBuildFile; productRef = B00000000000000000000E02 /* YayTextEditor */; };
+		B00000000000000000000B03 /* YayPreview in Frameworks */ = {isa = PBXBuildFile; productRef = B00000000000000000000E03 /* YayPreview */; };
+		B00000000000000000000B04 /* YayExport in Frameworks */ = {isa = PBXBuildFile; productRef = B00000000000000000000E04 /* YayExport */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		A05EC2422FA2C201004B8A5C /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = AppIcon.icon; sourceTree = "<group>"; };
+		A0B2F5842E5F4CB600124B70 /* Yay.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Yay.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B00000000000000000000A01 /* YayiPad.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = YayiPad.app; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		A03354702F69FD5B00F18A2B /* Exceptions for "Yay" folder in "Yay" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+				README.md,
+				themes/README.md,
+			);
+			target = A0B2F5832E5F4CB600124B70 /* Yay */;
+		};
+		B00000000000000000000C01 /* Exceptions for "YayiPad" folder in "YayiPad" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+				YayiPad.entitlements,
+				README.md,
+			);
+			target = B00000000000000000000101 /* YayiPad */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		A0B2F5862E5F4CB600124B70 /* Yay */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				A03354702F69FD5B00F18A2B /* Exceptions for "Yay" folder in "Yay" target */,
+			);
+			path = Yay;
+			sourceTree = "<group>";
+		};
+		B00000000000000000000D01 /* YayiPad */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				B00000000000000000000C01 /* Exceptions for "YayiPad" folder in "YayiPad" target */,
+			);
+			path = YayiPad;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		A0B2F5812E5F4CB600124B70 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A0E7DA0C2F64B66900924586 /* YayCore in Frameworks */,
+				A0E7DA122F64B68700924586 /* YayPreview in Frameworks */,
+				A0E7DA0F2F64B67700924586 /* YayTextEditor in Frameworks */,
+				A0E7DA152F64B69700924586 /* YayExport in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B00000000000000000000F01 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B00000000000000000000B01 /* YayCore in Frameworks */,
+				B00000000000000000000B02 /* YayTextEditor in Frameworks */,
+				B00000000000000000000B03 /* YayPreview in Frameworks */,
+				B00000000000000000000B04 /* YayExport in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		A0B2F57B2E5F4CB600124B70 = {
+			isa = PBXGroup;
+			children = (
+				A0B2F5862E5F4CB600124B70 /* Yay */,
+				B00000000000000000000D01 /* YayiPad */,
+				A0B2F5852E5F4CB600124B70 /* Products */,
+				A05EC2422FA2C201004B8A5C /* AppIcon.icon */,
+			);
+			sourceTree = "<group>";
+		};
+		A0B2F5852E5F4CB600124B70 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A0B2F5842E5F4CB600124B70 /* Yay.app */,
+				B00000000000000000000A01 /* YayiPad.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		A0B2F5832E5F4CB600124B70 /* Yay */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A0B2F5902E5F4CB700124B70 /* Build configuration list for PBXNativeTarget "Yay" */;
+			buildPhases = (
+				A0B2F5802E5F4CB600124B70 /* Sources */,
+				A0B2F5812E5F4CB600124B70 /* Frameworks */,
+				A0B2F5822E5F4CB600124B70 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				A0B2F5862E5F4CB600124B70 /* Yay */,
+			);
+			name = Yay;
+			packageProductDependencies = (
+				A0E7DA0B2F64B66900924586 /* YayCore */,
+				A0E7DA0E2F64B67700924586 /* YayTextEditor */,
+				A0E7DA112F64B68700924586 /* YayPreview */,
+				A0E7DA142F64B69700924586 /* YayExport */,
+			);
+			productName = Yay;
+			productReference = A0B2F5842E5F4CB600124B70 /* Yay.app */;
+			productType = "com.apple.product-type.application";
+		};
+		B00000000000000000000101 /* YayiPad */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B00000000000000000000201 /* Build configuration list for PBXNativeTarget "YayiPad" */;
+			buildPhases = (
+				B00000000000000000000301 /* Sources */,
+				B00000000000000000000F01 /* Frameworks */,
+				B00000000000000000000401 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				B00000000000000000000D01 /* YayiPad */,
+			);
+			name = YayiPad;
+			packageProductDependencies = (
+				B00000000000000000000E01 /* YayCore */,
+				B00000000000000000000E02 /* YayTextEditor */,
+				B00000000000000000000E03 /* YayPreview */,
+				B00000000000000000000E04 /* YayExport */,
+			);
+			productName = YayiPad;
+			productReference = B00000000000000000000A01 /* YayiPad.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		A0B2F57C2E5F4CB600124B70 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1640;
+				LastUpgradeCheck = 2640;
+				TargetAttributes = {
+					A0B2F5832E5F4CB600124B70 = {
+						CreatedOnToolsVersion = 16.4;
+					};
+					B00000000000000000000101 = {
+						CreatedOnToolsVersion = 16.4;
+					};
+				};
+			};
+			buildConfigurationList = A0B2F57F2E5F4CB600124B70 /* Build configuration list for PBXProject "Yay" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = A0B2F57B2E5F4CB600124B70;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				A0E7DA0A2F64B66900924586 /* XCLocalSwiftPackageReference "YayCore" */,
+				A0E7DA0D2F64B67700924586 /* XCLocalSwiftPackageReference "YayTextEditor" */,
+				A0E7DA102F64B68700924586 /* XCLocalSwiftPackageReference "YayPreview" */,
+				A0E7DA132F64B69700924586 /* XCLocalSwiftPackageReference "YayExport" */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = A0B2F5852E5F4CB600124B70 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				A0B2F5832E5F4CB600124B70 /* Yay */,
+				B00000000000000000000101 /* YayiPad */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		A0B2F5822E5F4CB600124B70 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A05EC2432FA2C201004B8A5C /* AppIcon.icon in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B00000000000000000000401 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		A0B2F5802E5F4CB600124B70 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B00000000000000000000301 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		A0B2F58E2E5F4CB700124B70 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.4;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		A0B2F58F2E5F4CB700124B70 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.4;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+			};
+			name = Release;
+		};
+		A0B2F5912E5F4CB700124B70 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
+				AUTOMATION_APPLE_EVENTS = NO;
+				CODE_SIGN_ENTITLEMENTS = Yay/Yay.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 8;
+				DEAD_CODE_STRIPPING = YES;
+				ENABLE_HARDENED_RUNTIME = NO;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_RESOURCE_ACCESS_AUDIO_INPUT = NO;
+				ENABLE_RESOURCE_ACCESS_CALENDARS = NO;
+				ENABLE_RESOURCE_ACCESS_CAMERA = NO;
+				ENABLE_RESOURCE_ACCESS_CONTACTS = NO;
+				ENABLE_RESOURCE_ACCESS_LOCATION = NO;
+				ENABLE_RESOURCE_ACCESS_PHOTO_LIBRARY = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Yay/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Yay;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0.8;
+				PRODUCT_BUNDLE_IDENTIFIER = app.myanmars.Yay;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				RUNTIME_EXCEPTION_ALLOW_DYLD_ENVIRONMENT_VARIABLES = NO;
+				RUNTIME_EXCEPTION_ALLOW_JIT = NO;
+				RUNTIME_EXCEPTION_ALLOW_UNSIGNED_EXECUTABLE_MEMORY = NO;
+				RUNTIME_EXCEPTION_DEBUGGING_TOOL = NO;
+				RUNTIME_EXCEPTION_DISABLE_EXECUTABLE_PAGE_PROTECTION = NO;
+				RUNTIME_EXCEPTION_DISABLE_LIBRARY_VALIDATION = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		A0B2F5922E5F4CB700124B70 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
+				AUTOMATION_APPLE_EVENTS = NO;
+				CODE_SIGN_ENTITLEMENTS = Yay/Yay.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 8;
+				DEAD_CODE_STRIPPING = YES;
+				ENABLE_HARDENED_RUNTIME = NO;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_RESOURCE_ACCESS_AUDIO_INPUT = NO;
+				ENABLE_RESOURCE_ACCESS_CALENDARS = NO;
+				ENABLE_RESOURCE_ACCESS_CAMERA = NO;
+				ENABLE_RESOURCE_ACCESS_CONTACTS = NO;
+				ENABLE_RESOURCE_ACCESS_LOCATION = NO;
+				ENABLE_RESOURCE_ACCESS_PHOTO_LIBRARY = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Yay/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Yay;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0.8;
+				PRODUCT_BUNDLE_IDENTIFIER = app.myanmars.Yay;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				RUNTIME_EXCEPTION_ALLOW_DYLD_ENVIRONMENT_VARIABLES = NO;
+				RUNTIME_EXCEPTION_ALLOW_JIT = NO;
+				RUNTIME_EXCEPTION_ALLOW_UNSIGNED_EXECUTABLE_MEMORY = NO;
+				RUNTIME_EXCEPTION_DEBUGGING_TOOL = NO;
+				RUNTIME_EXCEPTION_DISABLE_EXECUTABLE_PAGE_PROTECTION = NO;
+				RUNTIME_EXCEPTION_DISABLE_LIBRARY_VALIDATION = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		B00000000000000000000501 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
+				CODE_SIGN_ENTITLEMENTS = YayiPad/YayiPad.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = YayiPad/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = app.myanmars.YayiPad;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 2;
+			};
+			name = Debug;
+		};
+		B00000000000000000000502 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
+				CODE_SIGN_ENTITLEMENTS = YayiPad/YayiPad.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = YayiPad/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = app.myanmars.YayiPad;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 2;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		A0B2F57F2E5F4CB600124B70 /* Build configuration list for PBXProject "Yay" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A0B2F58E2E5F4CB700124B70 /* Debug */,
+				A0B2F58F2E5F4CB700124B70 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A0B2F5902E5F4CB700124B70 /* Build configuration list for PBXNativeTarget "Yay" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A0B2F5912E5F4CB700124B70 /* Debug */,
+				A0B2F5922E5F4CB700124B70 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B00000000000000000000201 /* Build configuration list for PBXNativeTarget "YayiPad" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B00000000000000000000501 /* Debug */,
+				B00000000000000000000502 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		A0E7DA0A2F64B66900924586 /* XCLocalSwiftPackageReference "YayCore" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = YayCore;
+		};
+		A0E7DA0D2F64B67700924586 /* XCLocalSwiftPackageReference "YayTextEditor" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = YayTextEditor;
+		};
+		A0E7DA102F64B68700924586 /* XCLocalSwiftPackageReference "YayPreview" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = YayPreview;
+		};
+		A0E7DA132F64B69700924586 /* XCLocalSwiftPackageReference "YayExport" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = YayExport;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		A0E7DA0B2F64B66900924586 /* YayCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = YayCore;
+		};
+		A0E7DA0E2F64B67700924586 /* YayTextEditor */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = YayTextEditor;
+		};
+		A0E7DA112F64B68700924586 /* YayPreview */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = YayPreview;
+		};
+		A0E7DA142F64B69700924586 /* YayExport */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = YayExport;
+		};
+		B00000000000000000000E01 /* YayCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = YayCore;
+		};
+		B00000000000000000000E02 /* YayTextEditor */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = YayTextEditor;
+		};
+		B00000000000000000000E03 /* YayPreview */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = YayPreview;
+		};
+		B00000000000000000000E04 /* YayExport */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = YayExport;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = A0B2F57C2E5F4CB600124B70 /* Project object */;
+}
