@@ -13,27 +13,30 @@ import YayCore
 //  stack (NSTextStorage + MarkdownLayoutManager + NSTextContainer) and
 //  hands it to MarkdownUITextView.
 //
-//  This is a Phase 1 MVP — sophisticated optimisations from the macOS
-//  Coordinator (incremental highlighting, visible-range tracking, scroll
-//  sync, find-panel attach) are deferred:
-//    - Scroll sync arrives with the iOS preview in Phase 2.
-//    - Find UI arrives in Phase 4.
-//    - Visible-range / debounced highlighting is a Phase-1.5 polish pass.
+//  Status:
+//    - Scroll sync wired via ScrollSyncBridge (Phase 2).
+//    - Find UI is now optional via the `finder` parameter; pass an
+//      IOSTextFinder and it's attached to the text view automatically
+//      (Phase 4).
+//    - Visible-range / debounced highlighting is still a future polish pass.
 //
 
 public struct YayTextEditor: UIViewRepresentable {
     @Binding var text: String
     public var configuration: YayEditorConfiguration = .standard
     public var scrollSync: ScrollSyncBridge?
+    public var finder: IOSTextFinder?
 
     public init(
         text: Binding<String>,
         configuration: YayEditorConfiguration = .standard,
-        scrollSync: ScrollSyncBridge? = nil
+        scrollSync: ScrollSyncBridge? = nil,
+        finder: IOSTextFinder? = nil
     ) {
         self._text = text
         self.configuration = configuration
         self.scrollSync = scrollSync
+        self.finder = finder
     }
 
     public func makeCoordinator() -> Coordinator {
@@ -80,12 +83,28 @@ public struct YayTextEditor: UIViewRepresentable {
             }
         }
 
+        if let finder {
+            // Attach asynchronously so the layout manager has a usable text
+            // storage before the finder runs its first highlight pass.
+            DispatchQueue.main.async {
+                finder.attach(textView: textView)
+            }
+        }
+
         return textView
     }
 
     public func updateUIView(_ textView: UITextView, context: Context) {
         context.coordinator.parent = self
         context.coordinator.highlighter.updateConfiguration(configuration)
+        context.coordinator.finder = finder
+
+        // Re-attach when the host swaps the finder in or back. attach() is
+        // idempotent for the same textView, so the common no-op case is cheap.
+        if let finder, finder !== context.coordinator.attachedFinder {
+            finder.attach(textView: textView)
+            context.coordinator.attachedFinder = finder
+        }
 
         if let lm = textView.layoutManager as? MarkdownLayoutManager {
             lm.lineHeightMultiple = configuration.lineHeightMultiple
@@ -113,10 +132,13 @@ public struct YayTextEditor: UIViewRepresentable {
     public class Coordinator: NSObject, UITextViewDelegate {
         var parent: YayTextEditor
         let highlighter: TreeSitterHighlighter
+        var finder: IOSTextFinder?
+        weak var attachedFinder: IOSTextFinder?
 
         init(_ parent: YayTextEditor) {
             self.parent = parent
             self.highlighter = TreeSitterHighlighter(configuration: parent.configuration)
+            self.finder = parent.finder
         }
 
         // MARK: - Edit Tracking
@@ -136,6 +158,9 @@ public struct YayTextEditor: UIViewRepresentable {
             if parent.configuration.enablesLiveHighlighting {
                 performHighlight(on: textView)
             }
+            // Tell the finder its match cache is stale; it'll reschedule a
+            // debounced re-search rather than firing on every keystroke.
+            finder?.textDidChange()
         }
 
         // MARK: - Highlighting
