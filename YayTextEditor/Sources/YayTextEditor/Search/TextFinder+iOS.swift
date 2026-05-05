@@ -60,13 +60,12 @@ public final class IOSTextFinder: ObservableObject {
 
     private weak var textView: UITextView?
     private var cachedMatches: [NSRange]?
-    private var searchBackgroundRuns: [TemporaryRun] = []
+    /// Ranges currently carrying a search-highlight temporary attribute.
+    /// Cleared via setTemporaryAttributes(_:forCharacterRange:) with an
+    /// empty dict on the next pass — UIKit's NSLayoutManager has no
+    /// removeTemporaryAttribute(_:forCharacterRange:) helper.
+    private var highlightedRanges: [NSRange] = []
     private var searchDebounce: AnyCancellable?
-
-    private struct TemporaryRun {
-        let range: NSRange
-        let value: Any?
-    }
 
     /// Bind the finder to a text view. Must be called after the view is
     /// installed in a window so the layout manager has a usable text storage.
@@ -210,8 +209,14 @@ public final class IOSTextFinder: ObservableObject {
         }
     }
 
-    // MARK: - Highlight (mirrors macOS TextFinder.highlightAll)
+    // MARK: - Highlight
 
+    /// Apply the yellow/orange search backgrounds. Clears any prior search
+    /// highlights first. UIKit's NSLayoutManager exposes only
+    /// `setTemporaryAttributes(_:forCharacterRange:)` (replaces all temp
+    /// attrs in the range) — no add/remove/query — so we simply track the
+    /// ranges we set and `set([:])` them to clear. Nothing else in this
+    /// codebase writes temporary attributes, so blanket clearing is safe.
     private func highlightAll() {
         guard let textView else { return }
         let matches = ensureMatches()
@@ -219,29 +224,30 @@ public final class IOSTextFinder: ObservableObject {
         else { return }
 
         let textLength = (textView.text as NSString?)?.length ?? 0
-        restoreSearchHighlights(using: layoutManager, textLength: textLength)
-
         let visible = matches.compactMap { clampedPositiveRange($0, textLength: textLength) }
-        guard !visible.isEmpty else { return }
 
-        let invalidationRange = unionRange(visible)
         let highlightColor = UIColor.systemYellow.withAlphaComponent(0.4)
         let currentColor = UIColor.systemOrange.withAlphaComponent(0.6)
 
+        let invalidationRange: NSRange = {
+            let allRanges = highlightedRanges + visible
+            return allRanges.isEmpty
+                ? NSRange(location: 0, length: textLength)
+                : unionRange(allRanges)
+        }()
+
         layoutManager.groupTemporaryAttributesUpdate(in: invalidationRange) {
-            self.searchBackgroundRuns = visible.flatMap {
-                self.temporaryBackgroundRuns(in: $0, layoutManager: layoutManager)
+            for prev in self.highlightedRanges {
+                guard let r = self.clampedPositiveRange(prev, textLength: textLength) else { continue }
+                layoutManager.setTemporaryAttributes([:], forCharacterRange: r)
             }
+            self.highlightedRanges.removeAll(keepingCapacity: true)
 
             for (index, match) in matches.enumerated() {
-                guard let match = self.clampedPositiveRange(match, textLength: textLength) else { continue }
+                guard let m = self.clampedPositiveRange(match, textLength: textLength) else { continue }
                 let color = (index == self.currentMatchIndex - 1) ? currentColor : highlightColor
-                // UIKit's NSLayoutManager exposes only the plural-dict form;
-                // it has no addTemporaryAttribute(_:value:forCharacterRange:).
-                layoutManager.addTemporaryAttributes(
-                    [.backgroundColor: color],
-                    forCharacterRange: match
-                )
+                layoutManager.setTemporaryAttributes([.backgroundColor: color], forCharacterRange: m)
+                self.highlightedRanges.append(m)
             }
         }
     }
@@ -251,62 +257,19 @@ public final class IOSTextFinder: ObservableObject {
         guard let textView,
               let layoutManager = textView.layoutManager as? MarkdownLayoutManager
         else {
-            searchBackgroundRuns.removeAll()
+            highlightedRanges.removeAll()
             return
         }
+        guard !highlightedRanges.isEmpty else { return }
+
         let textLength = (textView.text as NSString?)?.length ?? 0
-        restoreSearchHighlights(using: layoutManager, textLength: textLength)
-    }
-
-    private func temporaryBackgroundRuns(
-        in range: NSRange,
-        layoutManager: NSLayoutManager
-    ) -> [TemporaryRun] {
-        var runs: [TemporaryRun] = []
-        var location = range.location
-        let end = NSMaxRange(range)
-        // UIKit's NSLayoutManager has temporaryAttribute(_:atCharacterIndex:
-        // effectiveRange:) (single key) but not temporaryAttributes(...) (full
-        // dict). Snapshot only the .backgroundColor — that's the single
-        // attribute search ever sets, so the saved-runs round-trip is faithful.
-        while location < end {
-            var effective = NSRange(location: location, length: end - location)
-            let value = layoutManager.temporaryAttribute(
-                .backgroundColor,
-                atCharacterIndex: location,
-                effectiveRange: &effective
-            )
-            let clipped = NSIntersectionRange(effective, range)
-            if clipped.length > 0 {
-                runs.append(TemporaryRun(range: clipped, value: value))
+        let invalidationRange = unionRange(highlightedRanges)
+        layoutManager.groupTemporaryAttributesUpdate(in: invalidationRange) {
+            for prev in self.highlightedRanges {
+                guard let r = self.clampedPositiveRange(prev, textLength: textLength) else { continue }
+                layoutManager.setTemporaryAttributes([:], forCharacterRange: r)
             }
-            location = max(NSMaxRange(clipped), location + 1)
-        }
-        return runs
-    }
-
-    private func restoreSearchHighlights(using layoutManager: MarkdownLayoutManager, textLength: Int) {
-        let runs = searchBackgroundRuns.compactMap { run -> TemporaryRun? in
-            guard let r = clampedPositiveRange(run.range, textLength: textLength) else { return nil }
-            return TemporaryRun(range: r, value: run.value)
-        }
-        searchBackgroundRuns.removeAll()
-        guard !runs.isEmpty else { return }
-
-        layoutManager.groupTemporaryAttributesUpdate(in: unionRange(runs.map(\.range))) {
-            for run in runs {
-                if let value = run.value {
-                    layoutManager.addTemporaryAttributes(
-                        [.backgroundColor: value],
-                        forCharacterRange: run.range
-                    )
-                } else {
-                    layoutManager.removeTemporaryAttribute(
-                        .backgroundColor,
-                        forCharacterRange: run.range
-                    )
-                }
-            }
+            self.highlightedRanges.removeAll(keepingCapacity: true)
         }
     }
 
