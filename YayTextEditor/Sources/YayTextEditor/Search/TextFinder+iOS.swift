@@ -236,7 +236,12 @@ public final class IOSTextFinder: ObservableObject {
             for (index, match) in matches.enumerated() {
                 guard let match = self.clampedPositiveRange(match, textLength: textLength) else { continue }
                 let color = (index == self.currentMatchIndex - 1) ? currentColor : highlightColor
-                layoutManager.addTemporaryAttribute(.backgroundColor, value: color, forCharacterRange: match)
+                // UIKit's NSLayoutManager exposes only the plural-dict form;
+                // it has no addTemporaryAttribute(_:value:forCharacterRange:).
+                layoutManager.addTemporaryAttributes(
+                    [.backgroundColor: color],
+                    forCharacterRange: match
+                )
             }
         }
     }
@@ -260,15 +265,20 @@ public final class IOSTextFinder: ObservableObject {
         var runs: [TemporaryRun] = []
         var location = range.location
         let end = NSMaxRange(range)
+        // UIKit's NSLayoutManager has temporaryAttribute(_:atCharacterIndex:
+        // effectiveRange:) (single key) but not temporaryAttributes(...) (full
+        // dict). Snapshot only the .backgroundColor — that's the single
+        // attribute search ever sets, so the saved-runs round-trip is faithful.
         while location < end {
             var effective = NSRange(location: location, length: end - location)
-            let attrs = layoutManager.temporaryAttributes(
+            let value = layoutManager.temporaryAttribute(
+                .backgroundColor,
                 atCharacterIndex: location,
                 effectiveRange: &effective
             )
             let clipped = NSIntersectionRange(effective, range)
             if clipped.length > 0 {
-                runs.append(TemporaryRun(range: clipped, value: attrs[.backgroundColor]))
+                runs.append(TemporaryRun(range: clipped, value: value))
             }
             location = max(NSMaxRange(clipped), location + 1)
         }
@@ -286,9 +296,8 @@ public final class IOSTextFinder: ObservableObject {
         layoutManager.groupTemporaryAttributesUpdate(in: unionRange(runs.map(\.range))) {
             for run in runs {
                 if let value = run.value {
-                    layoutManager.addTemporaryAttribute(
-                        .backgroundColor,
-                        value: value,
+                    layoutManager.addTemporaryAttributes(
+                        [.backgroundColor: value],
                         forCharacterRange: run.range
                     )
                 } else {
